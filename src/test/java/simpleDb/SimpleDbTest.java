@@ -1,6 +1,8 @@
-package com.ll.simpleDb;
+package simpleDb;
 
 import com.ll.Article;
+import com.ll.simpleDb.SimpleDb;
+import com.ll.simpleDb.Sql;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDateTime;
@@ -25,7 +27,6 @@ public class SimpleDbTest {
     public static void beforeAll() {
         simpleDb = new SimpleDb("localhost", "root", "lldj123414", "simpleDb__test");
         simpleDb.setDevMode(true);
-
         createArticleTable();
     }
 
@@ -114,7 +115,7 @@ public class SimpleDbTest {
                 .append("WHERE id IN (?, ?, ?, ?)", 0, 1, 2, 3);
 
         // 수정된 row 개수
-        long affectedRowsCount = sql.update();
+        int affectedRowsCount = sql.update();
 
         assertThat(affectedRowsCount).isEqualTo(3);
     }
@@ -136,7 +137,7 @@ public class SimpleDbTest {
                 .append("WHERE id IN (?, ?, ?)", 0, 1, 3);
 
         // 삭제된 row 개수
-        long affectedRowsCount = sql.delete();
+        int affectedRowsCount = sql.delete();
 
         assertThat(affectedRowsCount).isEqualTo(2);
     }
@@ -153,6 +154,7 @@ public class SimpleDbTest {
         LIMIT 3
         */
         sql.append("SELECT * FROM article ORDER BY id ASC LIMIT 3");
+
         List<Map<String, Object>> articleRows = sql.selectRows();
 
         IntStream.range(0, articleRows.size()).forEach(i -> {
@@ -267,7 +269,6 @@ public class SimpleDbTest {
 
         assertThat(isBlind).isEqualTo(false);
     }
-
     @Test
     @DisplayName("selectBoolean, 2nd")
     public void t010() {
